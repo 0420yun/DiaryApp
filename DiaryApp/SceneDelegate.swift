@@ -10,13 +10,38 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var tabBarController: UITabBarController?
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        let window = UIWindow(windowScene: windowScene) // SceneDelegate의 프로퍼티에 설정해줌
+        let tabBarController = UITabBarController()
+        
+        let viewController1 = ViewController()
+        let viewController2 = StarViewController()
+        
+        // "+" 버튼 생성
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: viewController1, action: #selector(viewController1.openWriteDiaryViewController))
+
+        // viewController1을 UINavigationController로 래핑
+        let navigationController1 = UINavigationController(rootViewController: viewController1)
+        navigationController1.navigationBar.prefersLargeTitles = true
+        navigationController1.topViewController?.navigationItem.rightBarButtonItem = addButton
+
+        // Tab Bar 아이템 설정
+        viewController1.tabBarItem = UITabBarItem(title: "일기장", image: UIImage(systemName: "folder"), tag: 0)
+        viewController2.tabBarItem = UITabBarItem(title: "즐겨찾기", image: UIImage(systemName: "star"), tag: 1)
+        
+        tabBarController.viewControllers = [navigationController1, viewController2]
+    
+        // UIWindow의 루트 뷰 컨트롤러로 UINavigationController를 설정합니다.
+        window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
+        
+        // UIWindow를 표시합니다.
+        self.window = window
+        self.tabBarController = tabBarController
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
